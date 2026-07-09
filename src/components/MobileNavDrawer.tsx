@@ -1,0 +1,173 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { X, ChevronDown, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface MobileNavDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const navStructure = [
+  { label: 'Home', href: '/' },
+  {
+    label: 'Sarees', href: '/collections/sarees',
+    sub: [
+      'Silk Sarees', 'Cotton Sarees', 'Designer Sarees',
+      'Banarasi Sarees', 'Organza Sarees', 'Bridal Sarees', 'Party Wear',
+    ]
+  },
+  {
+    label: 'Suits', href: '/collections/suits',
+    sub: [
+      'Anarkali Suits', 'Straight Suits', 'Palazzo Suits',
+      'Embroidered Sets', 'Party Wear Sets', 'Unstitched',
+    ]
+  },
+  { label: 'Lehengas', href: '/collections/lehengas' },
+  { label: 'Kurtis & Tunics', href: '/collections/kurtis-tunics' },
+  { label: 'New Arrivals', href: '/collections/new-arrivals' },
+  { label: 'Best Sellers', href: '/collections/best-sellers' },
+  { label: 'Sale', href: '/collections/sale', isRed: true },
+];
+
+const helpLinks = [
+  { label: 'About Us', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+  { label: 'Wholesale Program', href: '/wholesale' },
+];
+
+export default function MobileNavDrawer({ isOpen, onClose }: MobileNavDrawerProps) {
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            className="fixed inset-0 bg-ink/40 z-50 lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+
+          {/* Drawer */}
+          <motion.div
+            className="fixed top-0 left-0 bottom-0 w-80 max-w-[90vw] bg-ivory z-50 lg:hidden flex flex-col shadow-2xl"
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'tween', duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+          >
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-taupe/20">
+              <Link href="/" onClick={onClose} className="flex items-center gap-2">
+                <div className="relative" style={{ width: 40, height: 40 }}>
+                  <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+                </div>
+                <div>
+                  <p className="font-playfair text-sm text-ink">SHIRIN&apos;S BOUTIQUE</p>
+                  <p className="text-[8px] font-montserrat tracking-[0.2em] uppercase text-taupe">Elegance · Ethnic · You</p>
+                </div>
+              </Link>
+              <button onClick={onClose} className="text-ink hover:text-gold transition-colors p-1">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Nav items */}
+            <div className="flex-1 overflow-y-auto py-4">
+              <ul className="px-2">
+                {navStructure.map((item) => (
+                  <li key={item.label}>
+                    {item.sub ? (
+                      <div>
+                        <button
+                          onClick={() => setExpanded(expanded === item.label ? null : item.label)}
+                          className="w-full flex items-center justify-between px-4 py-3 text-[13px] font-montserrat tracking-[0.06em] uppercase text-ink hover:text-gold transition-colors"
+                        >
+                          {item.label}
+                          <ChevronDown
+                            size={14}
+                            className={`transition-transform duration-200 ${expanded === item.label ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                        <AnimatePresence>
+                          {expanded === item.label && (
+                            <motion.ul
+                              className="ml-4 border-l-2 border-gold/30 pl-4 pb-2"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25 }}
+                            >
+                              {item.sub.map((sub) => (
+                                <li key={sub}>
+                                  <Link
+                                    href={item.href}
+                                    onClick={onClose}
+                                    className="flex items-center gap-1 py-2 text-[12px] font-montserrat text-taupe hover:text-gold transition-colors"
+                                  >
+                                    <ChevronRight size={10} />
+                                    {sub}
+                                  </Link>
+                                </li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={onClose}
+                        className={`block px-4 py-3 text-[13px] font-montserrat tracking-[0.06em] uppercase transition-colors ${
+                          item.isRed ? 'text-rose hover:text-rose/70' : 'text-ink hover:text-gold'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                    <div className="mx-4 h-px bg-taupe/15" />
+                  </li>
+                ))}
+              </ul>
+
+              {/* Help links */}
+              <div className="px-6 mt-4 pt-4 border-t border-taupe/20">
+                <p className="text-[10px] font-montserrat tracking-[0.18em] uppercase text-taupe mb-3">
+                  Help & Info
+                </p>
+                <ul className="space-y-2">
+                  {helpLinks.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        onClick={onClose}
+                        className="text-[12px] font-montserrat text-ink hover:text-gold transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer strip */}
+            <div className="px-5 py-3 border-t border-taupe/20 bg-ink/5">
+              <p className="text-[10px] font-montserrat tracking-[0.08em] text-taupe text-center">
+                Free Shipping · COD Available · Easy Returns
+              </p>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}

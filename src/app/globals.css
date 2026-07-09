@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1A1A1A;
+  --color-gold: #D4AF37;
+  --color-ivory: #F7F2EA;
+  --color-rose: #C08A8A;
+  --color-taupe: #A89E94;
+  --color-surface: #FFFFFF;
+  --color-wholesale: #1B2A6B;
+
+  --font-playfair: "Playfair Display", serif;
+  --font-montserrat: "Montserrat", sans-serif;
+
+  --shadow-brand: 0 4px 24px rgba(26,26,26,0.08);
+  --shadow-card: 0 2px 16px rgba(26,26,26,0.06);
+  --shadow-hover: 0 8px 32px rgba(26,26,26,0.14);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F7F2EA;
+  color: #1A1A1A;
+  font-family: "Montserrat", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Playfair Display headings */
+h1, h2, h3, h4 {
+  font-family: "Playfair Display", serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F7F2EA;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 3px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(212, 175, 55, 0.3);
+  color: #1A1A1A;
+}
+
+/* Custom cursor styles */
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #D4AF37;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid rgba(212, 175, 55, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
+}
+
+.cursor-hover .custom-cursor-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #C08A8A;
+}
+
+.cursor-hover .custom-cursor-ring {
+  width: 48px;
+  height: 48px;
+  border-color: rgba(192, 138, 138, 0.5);
+}
+
+/* Book flip widget */
+.book-flip-container {
+  perspective: 600px;
+}
+
+.book-page {
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transition: none;
+}
+
+/* Glass morphism */
+.glass-header {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(247, 242, 234, 0.82);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.glass-header-solid {
+  backdrop-filter: none;
+  background: rgba(247, 242, 234, 0.98);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 4px 24px rgba(26,26,26,0.08);
+}
+
+/* Wholesale mode accent line */
+.wholesale-accent-line {
+  border-bottom: 2px solid #1B2A6B;
+}
+
+/* Badge styles */
+.badge-new {
+  background: #D4AF37;
+  color: #1A1A1A;
+}
+
+.badge-bestseller {
+  background: #1A1A1A;
+  color: #D4AF37;
+}
+
+.badge-sale {
+  background: #C08A8A;
+  color: white;
+}
+
+.badge-moq {
+  background: #1B2A6B;
+  color: white;
+}
+
+/* Dropdown mega menu */
+.mega-menu {
+  transform-origin: top center;
+}
+
+/* Product card hover */
+.product-card {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.product-card:hover {
+  box-shadow: 0 8px 32px rgba(26,26,26,0.14);
+}
+
+/* Magnetic button base */
+.magnetic-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s ease,
+              background-color 0.25s ease;
+  will-change: transform;
+}
+
+/* Gold underline draw-in animation */
+.gold-underline {
+  position: relative;
+  overflow: hidden;
+}
+
+.gold-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #D4AF37;
+  transition: width 0.3s ease;
+}
+
+.gold-underline:hover::after {
+  width: 100%;
+}
+
+/* Nav active underline */
+.nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #D4AF37;
+}
+
+/* Page corner lift idle animation */
+@keyframes corner-lift {
+  0%, 100% { transform: rotateY(0deg); }
+  50% { transform: rotateY(-8deg); }
+}
+
+.book-idle {
+  animation: corner-lift 2.5s ease-in-out infinite;
+}
+
+/* Carousel */
+.carousel-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Image zoom on hover */
+.img-zoom {
+  overflow: hidden;
+}
+
+.img-zoom img {
+  transition: transform 0.5s ease;
+}
+
+.img-zoom:hover img {
+  transform: scale(1.06);
+}
+
+/* Skeleton loader */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #ede8df 25%, #f7f2ea 50%, #ede8df 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* WhatsApp float btn */
+.whatsapp-float {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9990;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.55);
+}
+
+/* Filter sidebar */
+.filter-drawer {
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-drawer.open {
+  transform: translateX(0);
+}
+
+/* Accordion */
+.accordion-content {
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+
+/* Mobile nav drawer */
+.mobile-nav-drawer {
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-nav-drawer.open {
+  transform: translateX(0);
+}
+
+/* Wholesale banner */
+.wholesale-banner {
+  background: linear-gradient(135deg, #1B2A6B 0%, #2a3d8f 100%);
+}
