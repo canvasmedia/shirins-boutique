@@ -1,17 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "images.pexels.com",
+        pathname: "/**",
       },
     ],
   },
 };
 
 export default nextConfig;
-
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
