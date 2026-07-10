@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { X, ChevronDown, ChevronRight } from 'lucide-react';
@@ -27,8 +27,21 @@ const navStructure = [
       'Embroidered Sets', 'Party Wear Sets', 'Unstitched',
     ]
   },
+  { label: 'Indo-Western', href: '/collections/indo-western' },
   { label: 'Lehengas', href: '/collections/lehengas' },
   { label: 'Kurtis & Tunics', href: '/collections/kurtis-tunics' },
+  { label: 'Designer Blouses', href: '/collections/blouses' },
+  { label: 'Jewellery & Accessories', href: '/collections/jewellery-accessories' },
+  {
+    label: 'Shop by Occasion', href: '/collections/occasion-bridal',
+    sub: ['Bridal', 'Party', 'Festive', 'Work'],
+    subHrefs: ['/collections/occasion-bridal', '/collections/occasion-party', '/collections/occasion-festive', '/collections/occasion-work'],
+  },
+  {
+    label: 'Shop by Fabric', href: '/collections/fabric-silk',
+    sub: ['Silk', 'Cotton', 'Georgette', 'Organza', 'Velvet', 'Chiffon'],
+    subHrefs: ['/collections/fabric-silk', '/collections/fabric-cotton', '/collections/fabric-georgette', '/collections/fabric-organza', '/collections/fabric-velvet', '/collections/fabric-chiffon'],
+  },
   { label: 'New Arrivals', href: '/collections/new-arrivals' },
   { label: 'Best Sellers', href: '/collections/best-sellers' },
   { label: 'Sale', href: '/collections/sale', isRed: true },
@@ -37,11 +50,27 @@ const navStructure = [
 const helpLinks = [
   { label: 'About Us', href: '/about' },
   { label: 'Contact', href: '/contact' },
+  { label: 'Wishlist', href: '/wishlist' },
   { label: 'Wholesale Program', href: '/wholesale' },
 ];
 
 export default function MobileNavDrawer({ isOpen, onClose }: MobileNavDrawerProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      return () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -66,9 +95,9 @@ export default function MobileNavDrawer({ isOpen, onClose }: MobileNavDrawerProp
           >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-taupe/20">
-              <Link href="/" onClick={onClose} className="flex items-center gap-2">
-                <div className="relative" style={{ width: 40, height: 40 }}>
-                  <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+              <Link href="/" onClick={onClose} className="flex items-center gap-2.5 group">
+                <div className="relative flex-shrink-0" style={{ width: 44, height: 44 }}>
+                  <Image src="/shirins_bout_logonew-removebg-preview.png" alt="Shirin's Boutique Logo" fill className="object-contain" />
                 </div>
                 <div>
                   <p className="font-playfair text-sm text-ink">SHIRIN&apos;S BOUTIQUE</p>
@@ -106,10 +135,10 @@ export default function MobileNavDrawer({ isOpen, onClose }: MobileNavDrawerProp
                               exit={{ height: 0, opacity: 0 }}
                               transition={{ duration: 0.25 }}
                             >
-                              {item.sub.map((sub) => (
+                              {item.sub.map((sub, i) => (
                                 <li key={sub}>
                                   <Link
-                                    href={item.href}
+                                    href={item.subHrefs?.[i] || item.href}
                                     onClick={onClose}
                                     className="flex items-center gap-1 py-2 text-[12px] font-montserrat text-taupe hover:text-gold transition-colors"
                                   >

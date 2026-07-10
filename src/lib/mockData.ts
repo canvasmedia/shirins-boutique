@@ -58,6 +58,69 @@ export const categories: Category[] = [
     image: 'https://images.pexels.com/photos/17876038/pexels-photo-17876038.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
     subcategories: [],
   },
+  {
+    id: 'indo-western',
+    slug: 'indo-western',
+    name: 'Indo-Western',
+    image: 'https://images.pexels.com/photos/20790061/pexels-photo-20790061.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    subcategories: [],
+  },
+  {
+    id: 'blouses',
+    slug: 'blouses',
+    name: 'Designer Blouses',
+    image: 'https://images.pexels.com/photos/18194533/pexels-photo-18194533.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+    subcategories: [],
+  },
+  {
+    id: 'jewellery-accessories',
+    slug: 'jewellery-accessories',
+    name: 'Jewellery & Accessories',
+    image: 'https://images.pexels.com/photos/7742859/pexels-photo-7742859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+    subcategories: [],
+  },
+];
+
+export const occasions = [
+  { slug: 'bridal', name: 'Bridal', tagline: 'For your big day', image: 'https://images.pexels.com/photos/12579916/pexels-photo-12579916.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800' },
+  { slug: 'party', name: 'Party', tagline: 'Cocktails & receptions', image: 'https://images.pexels.com/photos/17876038/pexels-photo-17876038.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200' },
+  { slug: 'festive', name: 'Festive', tagline: 'Diwali, pujas & celebrations', image: 'https://images.pexels.com/photos/9398389/pexels-photo-9398389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940' },
+  { slug: 'work', name: 'Work', tagline: 'Office-to-evening ease', image: 'https://images.pexels.com/photos/20790059/pexels-photo-20790059.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800' },
+];
+
+export const fabricTypes = [
+  { slug: 'silk', name: 'Silk', image: 'https://images.pexels.com/photos/9398390/pexels-photo-9398390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940' },
+  { slug: 'cotton', name: 'Cotton', image: 'https://images.pexels.com/photos/26969898/pexels-photo-26969898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200' },
+  { slug: 'georgette', name: 'Georgette', image: 'https://images.pexels.com/photos/34211603/pexels-photo-34211603.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200' },
+  { slug: 'organza', name: 'Organza', image: 'https://images.pexels.com/photos/17468605/pexels-photo-17468605.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200' },
+  { slug: 'velvet', name: 'Velvet', image: 'https://images.pexels.com/photos/7742859/pexels-photo-7742859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940' },
+  { slug: 'chiffon', name: 'Chiffon', image: 'https://images.pexels.com/photos/18194539/pexels-photo-18194539.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940' },
+];
+
+const OCCASION_KEYWORDS: Record<string, string[]> = {
+  bridal: ['bridal', 'wedding', 'heirloom'],
+  party: ['party', 'cocktail', 'reception', 'sequin', 'glamorous'],
+  festive: ['festive', 'puja', 'celebration', 'zardozi'],
+  work: ['office', 'everyday', 'casual', 'daytime'],
+};
+
+export function matchesOccasion(product: Product, occasionSlug: string): boolean {
+  const haystack = `${product.name} ${product.description} ${product.subcategory}`.toLowerCase();
+  const keywords = OCCASION_KEYWORDS[occasionSlug] || [];
+  return keywords.some(k => haystack.includes(k));
+}
+
+export function matchesFabric(product: Product, fabricSlug: string): boolean {
+  return product.fabric.toLowerCase().includes(fabricSlug.toLowerCase());
+}
+
+export const instagramPosts = [
+  { image: 'https://images.pexels.com/photos/9398390/pexels-photo-9398390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', likes: 842, href: '/collections/sarees' },
+  { image: 'https://images.pexels.com/photos/12062663/pexels-photo-12062663.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800', likes: 1204, href: '/collections/lehengas' },
+  { image: 'https://images.pexels.com/photos/18194539/pexels-photo-18194539.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', likes: 673, href: '/collections/suits' },
+  { image: 'https://images.pexels.com/photos/26969898/pexels-photo-26969898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200', likes: 519, href: '/collections/kurtis-tunics' },
+  { image: 'https://images.pexels.com/photos/34211603/pexels-photo-34211603.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200', likes: 967, href: '/collections/new-arrivals' },
+  { image: 'https://images.pexels.com/photos/20790061/pexels-photo-20790061.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800', likes: 1088, href: '/collections/indo-western' },
 ];
 
 const WHOLESALE_TIERS = [
@@ -441,15 +504,224 @@ export const products: Product[] = [
     minOrderQty: 6,
     wholesaleTiers: makeTiers(2800),
   },
+  // INDO-WESTERN
+  {
+    id: 'p19',
+    slug: 'cape-sleeve-indo-western-gown',
+    name: 'Cape Sleeve Indo-Western Gown',
+    category: 'indo-western',
+    subcategory: 'indo-western',
+    images: [
+      'https://images.pexels.com/photos/20790061/pexels-photo-20790061.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      'https://images.pexels.com/photos/12579916/pexels-photo-12579916.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    ],
+    fabric: 'Georgette with Sequin Cape',
+    careInstructions: 'Dry clean only.',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    tags: ['new'],
+    description: 'A fusion gown pairing a fitted bodice with a flowing cape sleeve, finished in hand-sequinned georgette. Reception-ready, halfway between a saree drape and a Western silhouette.',
+    retailPrice: 6499,
+    wholesalePricePerPiece: 4600,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(4600),
+  },
+  {
+    id: 'p20',
+    slug: 'dhoti-jumpsuit-fusion-set',
+    name: 'Dhoti-Style Jumpsuit',
+    category: 'indo-western',
+    subcategory: 'indo-western',
+    images: [
+      'https://images.pexels.com/photos/7742859/pexels-photo-7742859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      'https://images.pexels.com/photos/20790059/pexels-photo-20790059.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    ],
+    fabric: 'Crepe',
+    careInstructions: 'Dry clean recommended.',
+    sizes: ['XS', 'S', 'M', 'L'],
+    tags: ['bestseller'],
+    description: 'A one-piece jumpsuit with a draped dhoti-style leg and a fitted crepe bodice. Effortlessly modern for sundowners, cocktail parties, and destination functions.',
+    retailPrice: 3899,
+    compareAtPrice: 4699,
+    wholesalePricePerPiece: 2750,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(2750),
+  },
+  {
+    id: 'p21',
+    slug: 'asymmetric-kurta-palazzo-set',
+    name: 'Asymmetric Kurta Palazzo Set',
+    category: 'indo-western',
+    subcategory: 'indo-western',
+    images: [
+      'https://images.pexels.com/photos/18194533/pexels-photo-18194533.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      'https://images.pexels.com/photos/37442997/pexels-photo-37442997.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+    ],
+    fabric: 'Cotton Silk Blend',
+    careInstructions: 'Hand wash cold or dry clean.',
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    tags: ['new'],
+    description: 'A high-low asymmetric kurta with clean tailoring, styled over wide-leg palazzos. Everyday Indo-Western wear for the office or a casual evening out.',
+    retailPrice: 2599,
+    wholesalePricePerPiece: 1800,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(1800),
+  },
+  // DESIGNER BLOUSES
+  {
+    id: 'p22',
+    slug: 'mirror-work-saree-blouse',
+    name: 'Mirror Work Saree Blouse',
+    category: 'blouses',
+    subcategory: 'blouses',
+    images: [
+      'https://images.pexels.com/photos/18194533/pexels-photo-18194533.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      'https://images.pexels.com/photos/7742859/pexels-photo-7742859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+    ],
+    fabric: 'Raw Silk with Mirror Work',
+    careInstructions: 'Dry clean only.',
+    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    tags: ['bestseller'],
+    description: 'A structured saree blouse hand-embellished with shisha mirror work across the yoke. Pairs beautifully with plain silk or chiffon sarees for instant festive impact.',
+    retailPrice: 1899,
+    wholesalePricePerPiece: 1250,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(1250),
+  },
+  {
+    id: 'p23',
+    slug: 'zardozi-collar-blouse',
+    name: 'Zardozi Collar Blouse',
+    category: 'blouses',
+    subcategory: 'blouses',
+    images: [
+      'https://images.pexels.com/photos/9398389/pexels-photo-9398389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      'https://images.pexels.com/photos/12579916/pexels-photo-12579916.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    ],
+    fabric: 'Silk with Zardozi',
+    careInstructions: 'Dry clean only.',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    tags: ['new'],
+    description: 'A high-collar bridal blouse with dense zardozi embroidery, designed to be the statement piece under a plain drape saree.',
+    retailPrice: 2799,
+    wholesalePricePerPiece: 1950,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(1950),
+  },
+  {
+    id: 'p24',
+    slug: 'backless-tasseled-blouse',
+    name: 'Backless Tasseled Blouse',
+    category: 'blouses',
+    subcategory: 'blouses',
+    images: [
+      'https://images.pexels.com/photos/20790059/pexels-photo-20790059.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      'https://images.pexels.com/photos/34211603/pexels-photo-34211603.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+    ],
+    fabric: 'Silk Blend',
+    careInstructions: 'Dry clean only.',
+    sizes: ['XS', 'S', 'M', 'L'],
+    tags: ['sale'],
+    description: 'A deep-back blouse finished with hand-tied tassels at the closure. A party-ready pick that turns any saree into a statement look.',
+    retailPrice: 1599,
+    compareAtPrice: 2099,
+    wholesalePricePerPiece: 1050,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(1050),
+  },
+  // JEWELLERY & ACCESSORIES
+  {
+    id: 'p25',
+    slug: 'kundan-choker-necklace-set',
+    name: 'Kundan Choker Necklace Set',
+    category: 'jewellery-accessories',
+    subcategory: 'jewellery-accessories',
+    images: [
+      'https://images.pexels.com/photos/7275701/pexels-photo-7275701.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      'https://images.pexels.com/photos/17468605/pexels-photo-17468605.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+    ],
+    fabric: 'Kundan & Pearl',
+    careInstructions: 'Store in a dry pouch, away from perfume.',
+    tags: ['bestseller'],
+    description: 'A bridal-weight Kundan choker with hanging pearl strings and matching jhumka earrings. The finishing touch for a heavy lehenga or Banarasi saree.',
+    retailPrice: 2999,
+    wholesalePricePerPiece: 1950,
+    minOrderQty: 6,
+    wholesaleTiers: makeTiers(1950),
+  },
+  {
+    id: 'p26',
+    slug: 'oxidised-jhumka-earrings',
+    name: 'Oxidised Silver Jhumka Earrings',
+    category: 'jewellery-accessories',
+    subcategory: 'jewellery-accessories',
+    images: [
+      'https://images.pexels.com/photos/5872667/pexels-photo-5872667.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      'https://images.pexels.com/photos/26969898/pexels-photo-26969898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+    ],
+    fabric: 'Oxidised Silver',
+    careInstructions: 'Wipe clean with a soft cloth.',
+    tags: ['new'],
+    description: 'Everyday oxidised jhumkas with a light bell drop. Pairs equally well with cotton sarees and casual kurtis.',
+    retailPrice: 699,
+    wholesalePricePerPiece: 420,
+    minOrderQty: 12,
+    wholesaleTiers: makeTiers(420),
+  },
+  {
+    id: 'p27',
+    slug: 'embroidered-potli-clutch',
+    name: 'Embroidered Potli Clutch',
+    category: 'jewellery-accessories',
+    subcategory: 'jewellery-accessories',
+    images: [
+      'https://images.pexels.com/photos/17876038/pexels-photo-17876038.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      'https://images.pexels.com/photos/37442997/pexels-photo-37442997.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+    ],
+    fabric: 'Silk with Zari Embroidery',
+    careInstructions: 'Spot clean only.',
+    tags: ['sale'],
+    description: 'A hand-embroidered potli clutch on a drawstring, sized for essentials at a wedding or festive evening.',
+    retailPrice: 899,
+    compareAtPrice: 1199,
+    wholesalePricePerPiece: 560,
+    minOrderQty: 12,
+    wholesaleTiers: makeTiers(560),
+  },
+  {
+    id: 'p28',
+    slug: 'kundan-maang-tikka',
+    name: 'Kundan Maang Tikka',
+    category: 'jewellery-accessories',
+    subcategory: 'jewellery-accessories',
+    images: [
+      'https://images.pexels.com/photos/9398390/pexels-photo-9398390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      'https://images.pexels.com/photos/12062663/pexels-photo-12062663.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    ],
+    fabric: 'Kundan & Beads',
+    careInstructions: 'Store flat in a jewellery box.',
+    tags: ['new', 'bestseller'],
+    description: 'A classic Kundan maang tikka with a delicate hairpin chain — the essential bridal and festive hair accessory.',
+    retailPrice: 549,
+    wholesalePricePerPiece: 340,
+    minOrderQty: 12,
+    wholesaleTiers: makeTiers(340),
+  },
 ];
 
 export const heroImages = [
   {
+    url: 'https://images.pexels.com/photos/9398390/pexels-photo-9398390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+    headline: 'Sarees, Suits &',
+    subheadline: 'Indo-Western. Always.',
+    cta: 'Explore Sarees',
+    ctaLink: '/collections/sarees',
+  },
+  {
     url: 'https://images.pexels.com/photos/34211603/pexels-photo-34211603.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
     headline: 'Timeless Ethnic.',
     subheadline: 'Timeless You.',
-    cta: 'Explore Sarees',
-    ctaLink: '/collections/sarees',
+    cta: 'Shop Designer Suits',
+    ctaLink: '/collections/suits',
   },
   {
     url: 'https://images.pexels.com/photos/12062663/pexels-photo-12062663.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
@@ -457,6 +729,13 @@ export const heroImages = [
     subheadline: 'Every Celebration.',
     cta: 'Shop Lehengas',
     ctaLink: '/collections/lehengas',
+  },
+  {
+    url: 'https://images.pexels.com/photos/20790061/pexels-photo-20790061.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+    headline: 'Where Drape Meets',
+    subheadline: 'Modern Silhouette.',
+    cta: 'Shop Indo-Western',
+    ctaLink: '/collections/indo-western',
   },
   {
     url: 'https://images.pexels.com/photos/26969898/pexels-photo-26969898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
@@ -492,4 +771,33 @@ export function getRelatedProducts(product: Product, limit = 4): Product[] {
   return products
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, limit);
+}
+
+export function searchProducts(query: string): Product[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return products.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.fabric.toLowerCase().includes(q) ||
+    p.category.toLowerCase().includes(q) ||
+    p.subcategory.toLowerCase().includes(q) ||
+    p.description.toLowerCase().includes(q)
+  );
+}
+
+const URGENCY_MESSAGES = [
+  'Only 2 left in stock',
+  'Only 3 left in stock',
+  'Dispatch in 48 Hrs',
+  'Only 4 left in stock',
+  'Selling fast',
+  'Dispatch in 48 Hrs',
+];
+
+export function getUrgencyMessage(productId: string): string {
+  let hash = 0;
+  for (let i = 0; i < productId.length; i++) {
+    hash = (hash * 31 + productId.charCodeAt(i)) >>> 0;
+  }
+  return URGENCY_MESSAGES[hash % URGENCY_MESSAGES.length];
 }

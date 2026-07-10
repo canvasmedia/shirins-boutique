@@ -7,6 +7,7 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useSite } from '@/lib/context';
 import { formatPrice } from '@/lib/mockData';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import BackButton from '@/components/ui/BackButton';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateCartQuantity, cartTotal, mode } = useSite();
@@ -20,6 +21,9 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <div className="max-w-[1280px] mx-auto px-6 lg:px-16 py-16 text-center">
+        <div className="text-left mb-3">
+          <BackButton />
+        </div>
         <Breadcrumbs items={breadcrumbs} />
         <div className="mt-16">
           <ShoppingBag size={64} className="mx-auto text-taupe/40 mb-6" />
@@ -45,6 +49,9 @@ export default function CartPage() {
 
   return (
     <div className="max-w-[1280px] mx-auto px-6 lg:px-16 py-10">
+      <div className="mb-3">
+        <BackButton />
+      </div>
       <div className="mb-6">
         <Breadcrumbs items={breadcrumbs} />
       </div>

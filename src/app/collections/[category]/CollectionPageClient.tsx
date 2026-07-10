@@ -4,10 +4,11 @@ import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { SlidersHorizontal, ArrowUpDown } from 'lucide-react';
-import { products, categories } from '@/lib/mockData';
+import { products, categories, matchesFabric, matchesOccasion, occasions, fabricTypes } from '@/lib/mockData';
 import ProductCard from '@/components/ProductCard';
 import FilterSidebar from '@/components/collections/FilterSidebar';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import BackButton from '@/components/ui/BackButton';
 import { useSite } from '@/lib/context';
 
 const categoryHeroes: Record<string, string> = {
@@ -18,6 +19,9 @@ const categoryHeroes: Record<string, string> = {
   'new-arrivals': 'https://images.pexels.com/photos/34211603/pexels-photo-34211603.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
   'best-sellers': 'https://images.pexels.com/photos/12579916/pexels-photo-12579916.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
   sale: 'https://images.pexels.com/photos/17876038/pexels-photo-17876038.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+  'indo-western': 'https://images.pexels.com/photos/20790061/pexels-photo-20790061.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+  blouses: 'https://images.pexels.com/photos/18194533/pexels-photo-18194533.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+  'jewellery-accessories': 'https://images.pexels.com/photos/7742859/pexels-photo-7742859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
 };
 
 const categoryTitles: Record<string, string> = {
@@ -28,7 +32,19 @@ const categoryTitles: Record<string, string> = {
   'new-arrivals': 'New Arrivals',
   'best-sellers': 'Best Sellers',
   sale: 'Sale',
+  'indo-western': 'Indo-Western',
+  blouses: 'Designer Blouses',
+  'jewellery-accessories': 'Jewellery & Accessories',
 };
+
+for (const occ of occasions) {
+  categoryTitles[`occasion-${occ.slug}`] = `${occ.name} Edit`;
+  categoryHeroes[`occasion-${occ.slug}`] = occ.image;
+}
+for (const fab of fabricTypes) {
+  categoryTitles[`fabric-${fab.slug}`] = `${fab.name} Collection`;
+  categoryHeroes[`fabric-${fab.slug}`] = fab.image;
+}
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'new';
 
@@ -66,6 +82,12 @@ export default function CollectionPageClient({ category }: { category: string })
       filtered = filtered.filter(p => p.tags.includes('bestseller'));
     } else if (category === 'sale') {
       filtered = filtered.filter(p => p.tags.includes('sale'));
+    } else if (category.startsWith('occasion-')) {
+      const occasionSlug = category.replace('occasion-', '');
+      filtered = filtered.filter(p => matchesOccasion(p, occasionSlug));
+    } else if (category.startsWith('fabric-')) {
+      const fabricSlug = category.replace('fabric-', '');
+      filtered = filtered.filter(p => matchesFabric(p, fabricSlug));
     } else {
       filtered = filtered.filter(p => p.category === category);
     }
@@ -73,6 +95,16 @@ export default function CollectionPageClient({ category }: { category: string })
     // Apply tag filter
     if (filters.tags.length > 0) {
       filtered = filtered.filter(p => filters.tags.some(t => p.tags.includes(t as 'new' | 'bestseller' | 'sale')));
+    }
+
+    // Apply fabric filter (sidebar refinement)
+    if (filters.fabric.length > 0) {
+      filtered = filtered.filter(p => filters.fabric.some(f => matchesFabric(p, f)));
+    }
+
+    // Apply occasion filter (sidebar refinement)
+    if (filters.occasion.length > 0) {
+      filtered = filtered.filter(p => filters.occasion.some(o => matchesOccasion(p, o.toLowerCase().replace(' wear', ''))));
     }
 
     // Sort
@@ -153,7 +185,10 @@ export default function CollectionPageClient({ category }: { category: string })
       </div>
 
       <div className="max-w-[1280px] mx-auto px-6 lg:px-16 py-8">
-        {/* Breadcrumbs */}
+        {/* Back + Breadcrumbs */}
+        <div className="mb-3">
+          <BackButton />
+        </div>
         <div className="mb-6">
           <Breadcrumbs items={breadcrumbs} />
         </div>

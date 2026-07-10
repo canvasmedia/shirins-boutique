@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Package2, TrendingUp, Users, Star, CheckCircle, Truck, Award } from 'lucide-react';
 import WholesaleEnquiryForm from '@/components/WholesaleEnquiryForm';
+import BackButton from '@/components/ui/BackButton';
 
 const benefits = [
   {
@@ -92,6 +93,9 @@ export default function WholesalePage() {
 
   return (
     <>
+      <div className="px-6 lg:px-16 pt-4" style={{ background: '#1B2A6B' }}>
+        <BackButton />
+      </div>
       {/* Hero */}
       <div className="relative h-72 lg:h-96 overflow-hidden">
         <Image

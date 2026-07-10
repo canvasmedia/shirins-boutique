@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import BackButton from '@/components/ui/BackButton';
 
 export const metadata: Metadata = {
   title: "Our Story — Shirin's Boutique",
@@ -26,6 +27,9 @@ const milestones = [
 export default function AboutPage() {
   return (
     <>
+      <div className="px-6 lg:px-16 pt-4" style={{ background: '#F7F2EA' }}>
+        <BackButton />
+      </div>
       {/* Hero */}
       <div className="relative h-64 lg:h-80 overflow-hidden">
         <Image
@@ -136,18 +140,19 @@ export default function AboutPage() {
           <p className="text-[14px] font-montserrat text-taupe mb-8 max-w-md mx-auto">
             Whether you&apos;re shopping for yourself or looking to stock your boutique — we&apos;d love to have you.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-nowrap justify-center gap-2 sm:gap-4">
             <Link
               href="/collections/sarees"
-              className="inline-flex items-center gap-2 bg-ink text-gold font-montserrat font-bold text-[12px] tracking-[0.1em] uppercase px-8 py-4 rounded hover:bg-ink/90 transition-all"
+              className="inline-flex items-center gap-2 bg-ink text-gold font-montserrat font-bold text-[11px] sm:text-[12px] tracking-[0.06em] sm:tracking-[0.1em] uppercase px-5 sm:px-8 py-3.5 sm:py-4 rounded hover:bg-ink/90 transition-all whitespace-nowrap"
             >
               Shop Now →
             </Link>
             <Link
               href="/wholesale"
-              className="inline-flex items-center gap-2 border-2 border-gold text-gold font-montserrat font-bold text-[12px] tracking-[0.1em] uppercase px-8 py-4 rounded hover:bg-gold hover:text-ink transition-all"
+              className="inline-flex items-center gap-2 border-2 border-gold text-gold font-montserrat font-bold text-[11px] sm:text-[12px] tracking-[0.06em] sm:tracking-[0.1em] uppercase px-5 sm:px-8 py-3.5 sm:py-4 rounded hover:bg-gold hover:text-ink transition-all whitespace-nowrap"
             >
-              Wholesale Enquiry
+              <span className="sm:hidden">Wholesale</span>
+              <span className="hidden sm:inline">Wholesale Enquiry</span>
             </Link>
           </div>
         </div>

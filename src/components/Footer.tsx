@@ -6,14 +6,58 @@ import Image from 'next/image';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+function InstagramIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="2" width="20" height="20" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M13.5 21v-7h2.4l.4-2.8h-2.8V9.4c0-.8.3-1.4 1.5-1.4h1.4V5.5c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 3.9v2.9H7.8V15h2.4v6h3.3z" />
+    </svg>
+  );
+}
+
+function YoutubeIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="5" width="20" height="14" rx="4" />
+      <path d="M10.5 9.5l5 2.5-5 2.5v-5z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function XIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M4 3l7.3 9.6L4.4 21h2l6-6.9 5 6.9h3l-7.6-10 6.4-8.5h-2l-5.5 6.3L9.5 3H4z" />
+    </svg>
+  );
+}
+
 const shopLinks = [
   { label: 'Sarees', href: '/collections/sarees' },
   { label: 'Suits', href: '/collections/suits' },
+  { label: 'Indo-Western', href: '/collections/indo-western' },
   { label: 'Lehengas', href: '/collections/lehengas' },
   { label: 'Kurtis & Tunics', href: '/collections/kurtis-tunics' },
+  { label: 'Jewellery & Accessories', href: '/collections/jewellery-accessories' },
   { label: 'New Arrivals', href: '/collections/new-arrivals' },
   { label: 'Best Sellers', href: '/collections/best-sellers' },
   { label: 'Sale', href: '/collections/sale' },
+];
+
+const socialLinks = [
+  { label: 'Instagram', Icon: InstagramIcon },
+  { label: 'Facebook', Icon: FacebookIcon },
+  { label: 'YouTube', Icon: YoutubeIcon },
+  { label: 'X (Twitter)', Icon: XIcon },
 ];
 
 const helpLinks = [
@@ -110,9 +154,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand column */}
           <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-4">
-              <div className="relative" style={{ width: 50, height: 50 }}>
-                <Image src="/logo.png" alt="Shirin's Boutique" fill className="object-contain" />
+            <Link href="/" className="flex items-center gap-3 mb-4 group">
+              <div className="relative flex-shrink-0" style={{ width: 56, height: 56 }}>
+                <Image src="/shirins_bout_logonew-removebg-preview.png" alt="Shirin's Boutique Logo" fill className="object-contain" />
               </div>
               <div>
                 <p className="font-playfair text-base tracking-[0.06em] text-ivory">SHIRIN&apos;S BOUTIQUE</p>
@@ -126,19 +170,14 @@ export default function Footer() {
             </p>
             {/* Socials */}
             <div className="flex items-center gap-3">
-              {[
-                { label: 'Instagram', glyph: '📸' },
-                { label: 'Facebook', glyph: '🟦' },
-                { label: 'YouTube', glyph: '▶' },
-                { label: 'Twitter', glyph: '𝕏' },
-              ].map(({ label, glyph }) => (
+              {socialLinks.map(({ label, Icon }) => (
                 <a
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="w-8 h-8 rounded-full border border-ivory/20 flex items-center justify-center text-ivory/60 hover:text-gold hover:border-gold transition-all duration-200 text-xs"
+                  className="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full border border-ivory/20 flex items-center justify-center text-ivory/60 hover:text-gold hover:border-gold transition-all duration-200"
                 >
-                  {glyph}
+                  <Icon size={16} />
                 </a>
               ))}
             </div>
@@ -201,7 +240,7 @@ export default function Footer() {
       <div className="border-t border-ivory/10">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-16 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] font-montserrat text-ivory/40">
-            © {new Date().getFullYear()} Shirin&apos;s Boutique. All rights reserved.
+            {`© ${new Date().getFullYear()} Shirin's Boutique. All rights reserved.`}
           </p>
 
           {/* Payment icons */}

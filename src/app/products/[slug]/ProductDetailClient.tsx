@@ -8,6 +8,7 @@ import { Heart, ShoppingBag, MessageCircle, Truck, RefreshCw, Shield, ChevronLef
 import { getProductBySlug, getRelatedProducts, formatPrice } from '@/lib/mockData';
 import { useSite } from '@/lib/context';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import BackButton from '@/components/ui/BackButton';
 import Badge from '@/components/ui/Badge';
 import { AccordionItem } from '@/components/ui/Accordion';
 import ProductCard from '@/components/ProductCard';
@@ -59,7 +60,10 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   return (
     <>
       <div className="max-w-[1280px] mx-auto px-6 lg:px-16 py-8">
-        {/* Breadcrumbs */}
+        {/* Back + Breadcrumbs */}
+        <div className="mb-3">
+          <BackButton />
+        </div>
         <div className="mb-6">
           <Breadcrumbs items={breadcrumbs} />
         </div>
@@ -292,29 +296,31 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
             )}
 
             {/* CTAs */}
-            <div className="flex gap-3 mb-6">
+            <div className="flex flex-nowrap gap-2 sm:gap-3 mb-6">
               <motion.button
                 onClick={handleAddToCart}
                 whileTap={{ scale: 0.97 }}
-                className="flex-1 flex items-center justify-center gap-2 bg-ink text-gold text-[12px] font-montserrat font-bold tracking-[0.08em] uppercase py-4 rounded-lg hover:bg-ink/90 transition-all"
+                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 sm:gap-2 bg-ink text-gold text-[11px] sm:text-[12px] font-montserrat font-bold tracking-[0.04em] sm:tracking-[0.08em] uppercase px-2 py-4 rounded-lg hover:bg-ink/90 transition-all"
               >
-                <ShoppingBag size={16} />
-                {addedToCart ? '✓ Added!' : isWholesale ? `Add Lot (${lotSize} pcs)` : 'Add to Cart'}
+                <ShoppingBag size={16} className="flex-shrink-0" />
+                <span className="truncate">
+                  {addedToCart ? '✓ Added!' : isWholesale ? `Add Lot (${lotSize} pcs)` : 'Add to Cart'}
+                </span>
               </motion.button>
 
               <motion.button
                 onClick={() => setEnquiryOpen(true)}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 border-2 border-gold text-gold px-4 py-4 text-[12px] font-montserrat font-bold tracking-[0.08em] uppercase rounded-lg hover:bg-gold hover:text-ink transition-all"
+                className="flex-shrink-0 flex items-center justify-center gap-1.5 sm:gap-2 border-2 border-gold text-gold px-3 sm:px-4 py-4 text-[11px] sm:text-[12px] font-montserrat font-bold tracking-[0.04em] sm:tracking-[0.08em] uppercase rounded-lg hover:bg-gold hover:text-ink transition-all whitespace-nowrap"
               >
-                <MessageCircle size={16} />
+                <MessageCircle size={16} className="flex-shrink-0" />
                 {isWholesale ? 'Request Quote' : 'WhatsApp'}
               </motion.button>
 
               <motion.button
                 onClick={() => toggleWishlist(product.id)}
                 whileTap={{ scale: 0.9 }}
-                className={`w-14 flex items-center justify-center border-2 rounded-lg transition-all ${
+                className={`w-12 sm:w-14 flex-shrink-0 flex items-center justify-center border-2 rounded-lg transition-all ${
                   wishlisted ? 'border-rose bg-rose/10' : 'border-taupe/30 hover:border-rose'
                 }`}
                 aria-label="Add to wishlist"

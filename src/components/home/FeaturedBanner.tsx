@@ -41,13 +41,13 @@ export default function FeaturedBanner() {
             transition={{ duration: 0.7, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
           >
             <p className="text-[10px] font-montserrat tracking-[0.35em] uppercase text-gold mb-4">
-              Featured Collection
+              Curated Edit
             </p>
 
             <h2 className="font-playfair text-3xl lg:text-5xl text-ivory leading-tight mb-6">
-              The Bridal
+              The Wedding
               <br />
-              <span style={{ color: '#D4AF37' }}>Heritage Edit</span>
+              <span style={{ color: '#D4AF37' }}>Edit</span>
             </h2>
 
             <p className="text-[13px] font-montserrat text-ivory/60 leading-relaxed mb-4">

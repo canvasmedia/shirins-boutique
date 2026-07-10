@@ -9,6 +9,19 @@ export async function generateStaticParams() {
     { category: 'new-arrivals' },
     { category: 'best-sellers' },
     { category: 'sale' },
+    { category: 'indo-western' },
+    { category: 'blouses' },
+    { category: 'jewellery-accessories' },
+    { category: 'occasion-bridal' },
+    { category: 'occasion-party' },
+    { category: 'occasion-festive' },
+    { category: 'occasion-work' },
+    { category: 'fabric-silk' },
+    { category: 'fabric-cotton' },
+    { category: 'fabric-georgette' },
+    { category: 'fabric-organza' },
+    { category: 'fabric-velvet' },
+    { category: 'fabric-chiffon' },
   ];
 }
 

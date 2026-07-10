@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import BackButton from '@/components/ui/BackButton';
 
 const contactInfo = [
   { icon: MapPin, label: 'Address', value: '42 Sadar Bazaar, Jaipur, Rajasthan 302001' },
@@ -27,6 +28,9 @@ export default function ContactPage() {
   return (
     <>
       {/* Page header */}
+      <div className="px-6 lg:px-16 pt-4 pb-2" style={{ background: '#1A1A1A' }}>
+        <BackButton />
+      </div>
       <div className="py-14 text-center" style={{ background: '#1A1A1A' }}>
         <p className="text-[10px] font-montserrat tracking-[0.35em] uppercase text-gold/60 mb-3">We&apos;re Here to Help</p>
         <h1 className="font-playfair text-4xl lg:text-5xl text-ivory">Contact Us</h1>
@@ -95,7 +99,7 @@ export default function ContactPage() {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-montserrat tracking-wide uppercase text-taupe mb-1">Name *</label>
                     <input

@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingBag, Eye } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Flame, Timer } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '@/lib/types';
-import { formatPrice } from '@/lib/mockData';
+import { formatPrice, getUrgencyMessage } from '@/lib/mockData';
 import { useSite } from '@/lib/context';
 import Badge from './ui/Badge';
 
@@ -39,6 +39,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   const displayPrice = isWholesale ? product.wholesalePricePerPiece : product.retailPrice;
   const comparePrice = !isWholesale ? product.compareAtPrice : undefined;
+  const urgency = getUrgencyMessage(product.id);
+  const isLowStock = urgency.includes('left');
 
   return (
     <motion.div
@@ -167,6 +169,14 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             <p className="text-[10px] font-montserrat text-taupe/80 mt-1 truncate">
               {product.fabric}
             </p>
+
+            {/* Urgency micro-copy */}
+            <div className={`flex items-center gap-1 mt-1.5 ${isLowStock ? 'text-rose' : 'text-gold'}`}>
+              {isLowStock ? <Flame size={11} /> : <Timer size={11} />}
+              <span className="text-[10px] font-montserrat font-semibold tracking-wide">
+                {urgency}
+              </span>
+            </div>
           </div>
         </div>
       </Link>

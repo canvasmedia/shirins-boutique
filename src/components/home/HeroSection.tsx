@@ -116,18 +116,18 @@ export default function HeroSection() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
-                className="flex flex-wrap gap-4"
+                className="flex flex-nowrap gap-2 sm:gap-4"
               >
                 <Link
                   href={slide.ctaLink}
-                  className="group inline-flex items-center gap-2 bg-gold text-ink px-8 py-4 text-[12px] font-montserrat font-bold tracking-[0.1em] uppercase rounded hover:bg-gold/90 transition-all duration-200 hover:shadow-lg hover:shadow-gold/20"
+                  className="group inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-gold text-ink px-4 sm:px-8 py-3 sm:py-4 text-[11px] sm:text-[12px] font-montserrat font-bold tracking-[0.06em] sm:tracking-[0.1em] uppercase rounded hover:bg-gold/90 transition-all duration-200 hover:shadow-lg hover:shadow-gold/20 whitespace-nowrap min-w-0"
                 >
-                  {slide.cta}
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span className="truncate">{slide.cta}</span>
+                  <span className="transition-transform group-hover:translate-x-1 flex-shrink-0">→</span>
                 </Link>
                 <Link
                   href="/collections/new-arrivals"
-                  className="inline-flex items-center gap-2 border-2 border-ivory/50 text-ivory px-8 py-4 text-[12px] font-montserrat font-bold tracking-[0.1em] uppercase rounded hover:border-ivory hover:bg-ivory/10 transition-all duration-200"
+                  className="inline-flex items-center justify-center gap-2 border-2 border-ivory/50 text-ivory px-4 sm:px-8 py-3 sm:py-4 text-[11px] sm:text-[12px] font-montserrat font-bold tracking-[0.06em] sm:tracking-[0.1em] uppercase rounded hover:border-ivory hover:bg-ivory/10 transition-all duration-200 whitespace-nowrap"
                 >
                   New Arrivals
                 </Link>
