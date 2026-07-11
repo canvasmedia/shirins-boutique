@@ -51,7 +51,7 @@ const helpLinks = [
   { label: 'About Us', href: '/about' },
   { label: 'Contact', href: '/contact' },
   { label: 'Wishlist', href: '/wishlist' },
-  { label: 'Wholesale Program', href: '/wholesale' },
+  { label: 'Wholesale Platform', href: '/wholesale' },
 ];
 
 export default function MobileNavDrawer({ isOpen, onClose }: MobileNavDrawerProps) {

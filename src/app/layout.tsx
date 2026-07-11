@@ -7,7 +7,6 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import CustomCursor from '@/components/CustomCursor';
 import WholesaleBanner from '@/components/WholesaleBanner';
 
 const playfair = Playfair_Display({
@@ -35,7 +34,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className="antialiased" style={{ background: '#F7F2EA' }}>
         <SiteProvider>
-          <CustomCursor />
           <AnnouncementBar />
           <Header />
           <WholesaleBanner />

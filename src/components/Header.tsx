@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   { label: 'Sale', href: '/collections/sale', isRed: true },
   { label: 'About Us', href: '/about' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Wholesale Program', href: '/wholesale', isGold: true },
+  { label: 'Wholesale Platform', href: '/wholesale', isGold: true },
 ];
 
 export default function Header() {

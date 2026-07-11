@@ -77,7 +77,7 @@ const testimonials = [
   {
     name: 'Meena Krishnan',
     business: 'Silk Route, Chennai',
-    text: 'The wholesale program is genuinely boutique-friendly. Low MOQ, excellent packaging, and the team is always responsive. Couldn\'t ask for a better supplier.',
+    text: 'The wholesale platform is genuinely boutique-friendly. Low MOQ, excellent packaging, and the team is always responsive. Couldn\'t ask for a better supplier.',
     rating: 5,
   },
   {
@@ -100,7 +100,7 @@ export default function WholesalePage() {
       <div className="relative h-72 lg:h-96 overflow-hidden">
         <Image
           src="https://images.pexels.com/photos/9398390/pexels-photo-9398390.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-          alt="Wholesale Program"
+          alt="Wholesale Platform"
           fill
           className="object-cover object-top"
           sizes="100vw"
@@ -122,7 +122,7 @@ export default function WholesalePage() {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="font-playfair text-4xl lg:text-6xl text-white mb-4"
           >
-            Wholesale Program
+            Wholesale Platform
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 12 }}

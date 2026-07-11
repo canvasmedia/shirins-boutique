@@ -70,7 +70,7 @@ const helpLinks = [
 const aboutLinks = [
   { label: 'Our Story', href: '/about' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Wholesale Program', href: '/wholesale' },
+  { label: 'Wholesale Platform', href: '/wholesale' },
 ];
 
 const paymentIcons = ['VISA', 'MC', 'UPI', 'GPay', 'PayTM', 'RazorPay'];

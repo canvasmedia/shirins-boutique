@@ -12,7 +12,7 @@ const values = [
   { title: 'Authentic Craft', desc: 'Every piece is sourced directly from master artisan clusters in Varanasi, Kanchipuram, Lucknow, and Jaipur. We maintain direct relationships with over 120 weaver families.' },
   { title: 'Ethical Trade', desc: 'Fair wages, safe working conditions, and sustainable practices are non-negotiable. We believe beautiful fashion should never come at the cost of the people who create it.' },
   { title: 'Timeless Quality', desc: 'We reject fast fashion. Every fabric is tested for colorfastness, durability, and finish before it reaches you. Our pieces are made to be worn for decades.' },
-  { title: 'Inclusive Luxury', desc: 'Luxury shouldn\'t mean unaffordable. We work hard to offer genuine quality at accessible price points, and our wholesale program extends these values to boutiques nationwide.' },
+  { title: 'Inclusive Luxury', desc: 'Luxury shouldn\'t mean unaffordable. We work hard to offer genuine quality at accessible price points, and our wholesale platform extends these values to boutiques nationwide.' },
 ];
 
 const milestones = [
