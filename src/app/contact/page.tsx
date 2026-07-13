@@ -7,7 +7,7 @@ import BackButton from '@/components/ui/BackButton';
 
 const contactInfo = [
   { icon: MapPin, label: 'Address', value: '42 Sadar Bazaar, Jaipur, Rajasthan 302001' },
-  { icon: Phone, label: 'Phone', value: '+91 98765 43210' },
+  { icon: Phone, label: 'Phone', value: '+91 9836380078' },
   { icon: Mail, label: 'Email', value: 'hello@shirinsboutique.in' },
   { icon: Clock, label: 'Hours', value: 'Mon–Sat: 10am–7pm IST' },
 ];
@@ -64,7 +64,7 @@ export default function ContactPage() {
 
             {/* WhatsApp CTA */}
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/919836380078"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 bg-[#25D366] text-white font-montserrat font-bold text-[12px] tracking-[0.08em] uppercase px-6 py-4 rounded-xl hover:bg-[#20ba59] transition-all shadow-lg shadow-green-500/20"
