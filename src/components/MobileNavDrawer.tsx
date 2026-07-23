@@ -16,32 +16,55 @@ const navStructure = [
   {
     label: 'Sarees', href: '/collections/sarees',
     sub: [
-      'Silk Sarees', 'Cotton Sarees', 'Designer Sarees',
-      'Banarasi Sarees', 'Organza Sarees', 'Bridal Sarees', 'Party Wear',
-    ]
+      '— Silk Sarees —',
+      'Gadwal Silk', 'Kanchipuram Silk', 'Sico', 'Jamdani',
+      'Modal Silk', 'Tasar Silk', 'Bishnupuri Silk', 'Katan Banarasi',
+      '— Cotton & Linen Sarees —',
+      'Donekhali Tant', 'Linen Sarees',
+      '— Designer Sarees —',
+      'Zardosi Work Collection',
+    ],
+    subHrefs: [
+      null,
+      '/collections/sarees-silk-gadwal', '/collections/sarees-silk-kanchipuram',
+      '/collections/sarees-silk-sico', '/collections/sarees-silk-jamdani',
+      '/collections/sarees-silk-modal', '/collections/sarees-silk-tasar',
+      '/collections/sarees-silk-bishnupuri', '/collections/sarees-silk-katan-banarasi',
+      null,
+      '/collections/sarees-cotton-donekhali-tant', '/collections/sarees-cotton-linen',
+      null,
+      '/collections/sarees-designer-zardosi',
+    ],
   },
   {
-    label: 'Suits', href: '/collections/suits',
+    label: 'Salwar Suits', href: '/collections/suits',
     sub: [
-      'Anarkali Suits', 'Straight Suits', 'Palazzo Suits',
-      'Embroidered Sets', 'Party Wear Sets', 'Unstitched',
-    ]
+      'Cotton Suits', 'Tissue Suits', 'Modal Suits',
+      'Chiffon/Chinon Suits', 'Crepe Suits', 'Designer Suits',
+      'Indo-Western Collection',
+    ],
+    subHrefs: [
+      '/collections/suits-cotton', '/collections/suits-tissue', '/collections/suits-modal',
+      '/collections/suits-chiffon-chinon', '/collections/suits-crepe',
+      '/collections/suits-designer', '/collections/suits-indo-western',
+    ],
   },
-  { label: 'Indo-Western', href: '/collections/indo-western' },
-  { label: 'Lehengas', href: '/collections/lehengas' },
-  { label: 'Kurtis & Tunics', href: '/collections/kurtis-tunics' },
-  { label: 'Designer Blouses', href: '/collections/blouses' },
-  { label: 'Jewellery & Accessories', href: '/collections/jewellery-accessories' },
   {
-    label: 'Shop by Occasion', href: '/collections/occasion-bridal',
-    sub: ['Bridal', 'Party', 'Festive', 'Work'],
-    subHrefs: ['/collections/occasion-bridal', '/collections/occasion-party', '/collections/occasion-festive', '/collections/occasion-work'],
+    label: 'Lehenga', href: '/collections/lehengas',
+    sub: ['Bridal & Festive Lehenga'],
+    subHrefs: ['/collections/lehengas-bridal-festive'],
   },
   {
     label: 'Shop by Fabric', href: '/collections/fabric-silk',
     sub: ['Silk', 'Cotton', 'Georgette', 'Organza', 'Velvet', 'Chiffon'],
     subHrefs: ['/collections/fabric-silk', '/collections/fabric-cotton', '/collections/fabric-georgette', '/collections/fabric-organza', '/collections/fabric-velvet', '/collections/fabric-chiffon'],
   },
+  {
+    label: 'Shop by Occasion', href: '/collections/occasion-bridal',
+    sub: ['Bridal', 'Party', 'Festive', 'Work'],
+    subHrefs: ['/collections/occasion-bridal', '/collections/occasion-party', '/collections/occasion-festive', '/collections/occasion-work'],
+  },
+  { label: 'Jewellery & Accessories', href: '/collections/jewellery-accessories' },
   { label: 'New Arrivals', href: '/collections/new-arrivals' },
   { label: 'Best Sellers', href: '/collections/best-sellers' },
   { label: 'Sale', href: '/collections/sale', isRed: true },
@@ -135,18 +158,31 @@ export default function MobileNavDrawer({ isOpen, onClose }: MobileNavDrawerProp
                               exit={{ height: 0, opacity: 0 }}
                               transition={{ duration: 0.25 }}
                             >
-                              {item.sub.map((sub, i) => (
-                                <li key={sub}>
-                                  <Link
-                                    href={item.subHrefs?.[i] || item.href}
-                                    onClick={onClose}
-                                    className="flex items-center gap-1 py-2 text-[12px] font-montserrat text-taupe hover:text-gold transition-colors"
-                                  >
-                                    <ChevronRight size={10} />
-                                    {sub}
-                                  </Link>
-                                </li>
-                              ))}
+                              {item.sub.map((sub, i) => {
+                                const href = item.subHrefs?.[i];
+                                const isHeading = href === null || (href === undefined && sub.startsWith('—'));
+                                if (isHeading) {
+                                  return (
+                                    <li key={sub}>
+                                      <p className="pt-3 pb-1 text-[9px] font-montserrat tracking-[0.18em] uppercase text-gold font-semibold">
+                                        {sub.replace(/^—\s*/, '').replace(/\s*—$/, '')}
+                                      </p>
+                                    </li>
+                                  );
+                                }
+                                return (
+                                  <li key={sub}>
+                                    <Link
+                                      href={href || item.href}
+                                      onClick={onClose}
+                                      className="flex items-center gap-1 py-2 text-[12px] font-montserrat text-taupe hover:text-gold transition-colors"
+                                    >
+                                      <ChevronRight size={10} />
+                                      {sub}
+                                    </Link>
+                                  </li>
+                                );
+                              })}
                             </motion.ul>
                           )}
                         </AnimatePresence>

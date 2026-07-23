@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { SlidersHorizontal, ArrowUpDown } from 'lucide-react';
-import { products, categories, matchesFabric, matchesOccasion, occasions, fabricTypes } from '@/lib/mockData';
+import { categories, matchesFabric, matchesOccasion, occasions, fabricTypes } from '@/lib/mockData';
+import { normalizeProduct } from '@/lib/shopifyTypes';
+import { getProductsByCollectionHandle } from '@/lib/shopify';
+import type { Product } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import FilterSidebar from '@/components/collections/FilterSidebar';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -68,43 +71,47 @@ export default function CollectionPageClient({ category }: { category: string })
   });
   const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const title = categoryTitles[category] || category.replace(/-/g, ' ');
   const heroImg = categoryHeroes[category] || categoryHeroes.sarees;
 
-  const categoryProducts = useMemo(() => {
-    let filtered = products;
+  // ── Fetch from Shopify ────────────────────────────────────────────────────
+  useEffect(() => {
+    setLoading(true);
+    setPage(1);
 
-    // Filter by category
-    if (['new-arrivals'].includes(category)) {
-      filtered = filtered.filter(p => p.tags.includes('new'));
-    } else if (category === 'best-sellers') {
-      filtered = filtered.filter(p => p.tags.includes('bestseller'));
-    } else if (category === 'sale') {
-      filtered = filtered.filter(p => p.tags.includes('sale'));
-    } else if (category.startsWith('occasion-')) {
-      const occasionSlug = category.replace('occasion-', '');
-      filtered = filtered.filter(p => matchesOccasion(p, occasionSlug));
-    } else if (category.startsWith('fabric-')) {
-      const fabricSlug = category.replace('fabric-', '');
-      filtered = filtered.filter(p => matchesFabric(p, fabricSlug));
-    } else {
-      filtered = filtered.filter(p => p.category === category);
-    }
+    getProductsByCollectionHandle(category, 100).then((shopifyProducts) => {
+      const normalized = shopifyProducts.map(normalizeProduct);
+      setAllProducts(normalized);
+      setLoading(false);
+    });
+  }, [category]);
+
+  // ── Client-side filtering & sorting ───────────────────────────────────────
+  const categoryProducts = useMemo(() => {
+    let filtered = allProducts;
 
     // Apply tag filter
     if (filters.tags.length > 0) {
-      filtered = filtered.filter(p => filters.tags.some(t => p.tags.includes(t as 'new' | 'bestseller' | 'sale')));
+      filtered = filtered.filter(p =>
+        filters.tags.some(t => p.tags.includes(t as 'new' | 'bestseller' | 'sale'))
+      );
     }
 
     // Apply fabric filter (sidebar refinement)
     if (filters.fabric.length > 0) {
-      filtered = filtered.filter(p => filters.fabric.some(f => matchesFabric(p, f)));
+      filtered = filtered.filter(p =>
+        filters.fabric.some(f => matchesFabric(p, f))
+      );
     }
 
     // Apply occasion filter (sidebar refinement)
     if (filters.occasion.length > 0) {
-      filtered = filtered.filter(p => filters.occasion.some(o => matchesOccasion(p, o.toLowerCase().replace(' wear', ''))));
+      filtered = filtered.filter(p =>
+        filters.occasion.some(o => matchesOccasion(p, o.toLowerCase().replace(' wear', '')))
+      );
     }
 
     // Sort
@@ -131,7 +138,7 @@ export default function CollectionPageClient({ category }: { category: string })
     }
 
     return filtered;
-  }, [category, filters, sort, mode]);
+  }, [allProducts, filters, sort, mode]);
 
   const paginatedProducts = categoryProducts.slice(0, page * PAGE_SIZE);
   const hasMore = paginatedProducts.length < categoryProducts.length;
@@ -171,7 +178,7 @@ export default function CollectionPageClient({ category }: { category: string })
           >
             {title}
           </motion.h1>
-          {categoryProducts.length > 0 && (
+          {!loading && categoryProducts.length > 0 && (
             <motion.p
               className="text-[12px] font-montserrat text-ivory/60 mt-2"
               initial={{ opacity: 0 }}
@@ -215,7 +222,7 @@ export default function CollectionPageClient({ category }: { category: string })
                   )}
                 </button>
                 <p className="text-[12px] font-montserrat text-taupe">
-                  {categoryProducts.length} results
+                  {loading ? 'Loading…' : `${categoryProducts.length} results`}
                 </p>
               </div>
 
@@ -248,11 +255,26 @@ export default function CollectionPageClient({ category }: { category: string })
               </div>
             )}
 
-            {/* Products grid */}
-            {paginatedProducts.length === 0 ? (
+            {/* Loading skeleton */}
+            {loading ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="bg-surface rounded-xl overflow-hidden animate-pulse">
+                    <div className="aspect-[3/4] bg-taupe/10" />
+                    <div className="p-3.5 space-y-2">
+                      <div className="h-3 bg-taupe/10 rounded w-1/2" />
+                      <div className="h-4 bg-taupe/10 rounded w-3/4" />
+                      <div className="h-4 bg-taupe/10 rounded w-1/3" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : paginatedProducts.length === 0 ? (
               <div className="text-center py-20">
                 <p className="font-playfair text-2xl text-taupe mb-2">No products found</p>
-                <p className="text-[13px] font-montserrat text-taupe/70">Try adjusting your filters</p>
+                <p className="text-[13px] font-montserrat text-taupe/70">
+                  Products will appear here once they are added to this collection in Shopify.
+                </p>
               </div>
             ) : (
               <>

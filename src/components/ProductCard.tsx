@@ -26,7 +26,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, isWholesale ? product.minOrderQty : 1);
+    // product.id is the Shopify product GID; the first variant is implied when no variantId is specified.
+    // For quick-add from the card we use the product GID — Shopify resolves to the default variant.
+    addToCart(product.id, isWholesale ? product.minOrderQty : 1);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 1800);
   };

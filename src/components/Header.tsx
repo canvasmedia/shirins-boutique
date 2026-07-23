@@ -12,7 +12,7 @@ import SimpleMegaMenu from './SimpleMegaMenu';
 import MobileNavDrawer from './MobileNavDrawer';
 import { occasions, fabricTypes } from '@/lib/mockData';
 
-type MegaKey = 'sarees' | 'suits' | 'occasion' | 'fabric';
+type MegaKey = 'sarees' | 'suits' | 'lehenga' | 'occasion' | 'fabric';
 
 interface NavItem {
   label: string;
@@ -26,13 +26,10 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Sarees', href: '/collections/sarees', hasDropdown: true, key: 'sarees' },
-  { label: 'Suits', href: '/collections/suits', hasDropdown: true, key: 'suits' },
-  { label: 'Indo-Western', href: '/collections/indo-western' },
-  { label: 'Lehengas', href: '/collections/lehengas' },
-  { label: 'Kurtis & Tunics', href: '/collections/kurtis-tunics' },
-  { label: 'Shop by Occasion', href: '/collections/occasion-bridal', hasDropdown: true, key: 'occasion' },
+  { label: 'Salwar Suits', href: '/collections/suits', hasDropdown: true, key: 'suits' },
+  { label: 'Lehenga', href: '/collections/lehengas', hasDropdown: true, key: 'lehenga' },
   { label: 'Shop by Fabric', href: '/collections/fabric-silk', hasDropdown: true, key: 'fabric' },
-  { label: 'Designer Blouses', href: '/collections/blouses' },
+  { label: 'Shop by Occasion', href: '/collections/occasion-bridal', hasDropdown: true, key: 'occasion' },
   { label: 'Jewellery & Accessories', href: '/collections/jewellery-accessories' },
   { label: 'New Arrivals', href: '/collections/new-arrivals' },
   { label: 'Best Sellers', href: '/collections/best-sellers' },
@@ -355,10 +352,10 @@ export default function Header() {
             </div>
 
             {/* Mega menus */}
-            {(activeMega === 'sarees' || activeMega === 'suits') && (
+            {(activeMega === 'sarees' || activeMega === 'suits' || activeMega === 'lehenga') && (
               <MegaMenu
                 isOpen={!!activeMega}
-                category={activeMega}
+                category={activeMega as 'sarees' | 'suits' | 'lehenga'}
                 onClose={() => setActiveMega(null)}
               />
             )}

@@ -62,10 +62,11 @@ const socialLinks = [
 
 const helpLinks = [
   { label: 'Track Order', href: '/contact' },
-  { label: 'Returns & Exchanges', href: '/contact' },
-  { label: 'Shipping Policy', href: '/contact' },
+  { label: 'Returns & Exchanges', href: '/returns' },
+  { label: 'Shipping Policy', href: '/shipping' },
   { label: 'FAQs', href: '/contact' },
 ];
+
 
 const aboutLinks = [
   { label: 'Our Story', href: '/about' },
@@ -165,9 +166,18 @@ export default function Footer() {
                 </p>
               </div>
             </Link>
-            <p className="text-[12px] font-montserrat text-ivory/50 leading-relaxed mb-5">
+            <p className="text-[12px] font-montserrat text-ivory/50 leading-relaxed mb-4">
               Curating the finest Indian ethnic wear — from heirloom silks to everyday elegance. Rooted in tradition, crafted for today.
             </p>
+            {/* Address */}
+            <address className="not-italic mb-5">
+              <p className="text-[11px] font-montserrat tracking-[0.1em] uppercase text-gold/70 mb-1">Visit Us</p>
+              <p className="text-[11px] font-montserrat text-ivory/50 leading-relaxed">
+                1, British Indian Street, 6th Floor,<br />
+                Room No. 603, Kolkata – 700069<br />
+                <span className="text-ivory/35">(Opp. Merlin Chamber Building)</span>
+              </p>
+            </address>
             {/* Socials */}
             <div className="flex items-center gap-3">
               {socialLinks.map(({ label, Icon }) => (

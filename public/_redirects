@@ -1,0 +1,34 @@
+# Cloudflare Pages — URL Routing Rules
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# HOW THIS WORKS WITH SHOPIFY HEADLESS:
+#
+# The site is a Next.js static export (pure HTML/JS/CSS on Cloudflare's CDN).
+# All product data is fetched live from Shopify's Storefront API in the browser.
+#
+# This means:
+#   ✓ You update a product in Shopify Admin
+#   ✓ The next visitor to that product page gets the new data INSTANTLY
+#   ✓ No rebuild of the frontend is needed — EVER
+#   ✓ Price changes, new images, stock levels — all live automatically
+#
+# The only time you need to rebuild & redeploy is if you change:
+#   - The UI/design/layout (HTML/CSS/JS)
+#   - Add new pages or navigation items
+#   - Change configuration (env vars, next.config.ts)
+#   NOT needed for: product updates, new products, price changes, images
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# SPA FALLBACK RULES
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Product pages: serve the pre-built shell HTML for any product slug.
+# The shell's JavaScript reads window.location.pathname and fetches the
+# correct product from Shopify's API in the browser.
+#
+/products/*     /products/_/index.html    200
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SECURITY & SEO HEADERS
+# ─────────────────────────────────────────────────────────────────────────────
+# Note: Detailed headers go in _headers file (see public/_headers)

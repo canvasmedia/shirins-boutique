@@ -1,16 +1,38 @@
 'use client';
 
+/**
+ * Wishlist page — shows products that have been hearted.
+ * Wishlist IDs are Shopify product GIDs. We look up each one
+ * from getAllProducts (cached in memory during the session).
+ * Since this is client-side, we store what we can from context.
+ */
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useSite } from '@/lib/context';
-import { products } from '@/lib/mockData';
+import { getAllProducts } from '@/lib/shopify';
+import { normalizeProduct } from '@/lib/shopifyTypes';
+import type { Product } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BackButton from '@/components/ui/BackButton';
 
 export default function WishlistPage() {
   const { wishlist } = useSite();
-  const wishlistedProducts = products.filter(p => wishlist.includes(p.id));
+  const [wishlistedProducts, setWishlistedProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (wishlist.length === 0) {
+      setWishlistedProducts([]);
+      return;
+    }
+    // Fetch all products and filter by wishlisted IDs
+    getAllProducts(250).then((shopifyProducts) => {
+      const all = shopifyProducts.map(normalizeProduct);
+      setWishlistedProducts(all.filter((p) => wishlist.includes(p.id)));
+    });
+  }, [wishlist]);
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },

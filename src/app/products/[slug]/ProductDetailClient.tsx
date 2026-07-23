@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, ShoppingBag, MessageCircle, Truck, RefreshCw, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getProductBySlug, getRelatedProducts, formatPrice } from '@/lib/mockData';
+import { formatPrice } from '@/lib/mockData';
 import { useSite } from '@/lib/context';
+import { getProductByHandle } from '@/lib/shopify';
+import { normalizeProduct } from '@/lib/shopifyTypes';
+import type { Product } from '@/lib/types';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BackButton from '@/components/ui/BackButton';
 import Badge from '@/components/ui/Badge';
@@ -16,14 +19,66 @@ import WholesaleEnquiryForm from '@/components/WholesaleEnquiryForm';
 
 export default function ProductDetailClient({ slug }: { slug: string }) {
   const { mode, addToCart, toggleWishlist, isWishlisted } = useSite();
-  const product = getProductBySlug(slug);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [lotSize, setLotSize] = useState<number>(6);
   const [addedToCart, setAddedToCart] = useState(false);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const isWholesale = mode === 'wholesale';
+
+  // ── Resolve the real slug from the URL ───────────────────────────────────
+  // When Cloudflare serves the shell HTML (slug prop = '_'), we read the
+  // actual product handle from window.location.pathname, e.g.:
+  //   /products/banarasi-silk-saree → 'banarasi-silk-saree'
+  const resolvedSlug =
+    typeof window !== 'undefined' && slug === '_'
+      ? window.location.pathname.split('/products/')[1]?.split('/')[0] ?? slug
+      : slug;
+
+  // Fetch product from Shopify
+  useEffect(() => {
+    if (!resolvedSlug || resolvedSlug === '_') return;
+    setLoading(true);
+    getProductByHandle(resolvedSlug).then((shopifyProduct) => {
+      if (shopifyProduct) {
+        const normalized = normalizeProduct(shopifyProduct);
+        setProduct(normalized);
+        // Set default variant ID to the first variant
+        const firstVariant = shopifyProduct.variants.edges[0]?.node;
+        if (firstVariant) {
+          setSelectedVariantId(firstVariant.id);
+          setLotSize(normalized.minOrderQty);
+        }
+        // Fetch related products from same category collection
+        import('@/lib/shopify').then(({ getProductsByCollectionHandle }) => {
+          getProductsByCollectionHandle(normalized.category, 8).then((shopifyRelated) => {
+            const related = shopifyRelated
+              .map(normalizeProduct)
+              .filter((p) => p.id !== normalized.id)
+              .slice(0, 4);
+            setRelatedProducts(related);
+          });
+        });
+      }
+      setLoading(false);
+    });
+  }, [resolvedSlug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[13px] font-montserrat text-taupe">Loading product…</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -40,13 +95,13 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   }
 
   const wishlisted = isWishlisted(product.id);
-  const relatedProducts = getRelatedProducts(product, 4);
-
   const displayPrice = isWholesale ? product.wholesalePricePerPiece : product.retailPrice;
   const comparePrice = !isWholesale ? product.compareAtPrice : undefined;
 
   const handleAddToCart = () => {
-    addToCart(product, isWholesale ? lotSize : quantity, selectedSize || undefined, lotSize);
+    // Use selected variant ID if available, otherwise fall back to product ID
+    const idToAdd = selectedVariantId ?? product.id;
+    addToCart(idToAdd, isWholesale ? lotSize : quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
@@ -157,7 +212,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
           <div className="flex flex-col">
             {/* Category tag */}
             <p className="text-[10px] font-montserrat tracking-[0.2em] uppercase text-taupe mb-2">
-              {product.category.replace(/-/g, ' ')} · {product.subcategory.replace(/-/g, ' ')}
+              {product.category.replace(/-/g, ' ')} {product.subcategory && `· ${product.subcategory.replace(/-/g, ' ')}`}
             </p>
 
             {/* Name */}
@@ -339,7 +394,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
               </div>
               <div className="flex items-center gap-2">
                 <RefreshCw size={14} className="text-gold flex-shrink-0" />
-                <p className="text-[12px] font-montserrat text-ink">15-day easy returns & exchanges</p>
+                <p className="text-[12px] font-montserrat text-ink">15-day easy returns &amp; exchanges</p>
               </div>
               <div className="flex items-center gap-2">
                 <Shield size={14} className="text-gold flex-shrink-0" />
@@ -349,14 +404,14 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
 
             {/* Accordion info */}
             <div>
-              <AccordionItem title="Fabric & Care" defaultOpen>
+              <AccordionItem title="Fabric &amp; Care" defaultOpen>
                 <p><strong>Fabric:</strong> {product.fabric}</p>
                 <p className="mt-1"><strong>Care:</strong> {product.careInstructions}</p>
                 {product.category === 'sarees' && (
                   <p className="mt-1">Blouse piece included with matching fabric.</p>
                 )}
               </AccordionItem>
-              <AccordionItem title={isWholesale ? 'Bulk Order Terms' : 'Shipping & Returns'}>
+              <AccordionItem title={isWholesale ? 'Bulk Order Terms' : 'Shipping &amp; Returns'}>
                 {isWholesale ? (
                   <>
                     <p>Minimum order quantity: {product.minOrderQty} pieces per style.</p>

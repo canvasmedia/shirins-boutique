@@ -1,5 +1,13 @@
 import CollectionPageClient from './CollectionPageClient';
 
+/**
+ * Collections page — products are fetched client-side from Shopify.
+ *
+ * Static export (output: "export") requires generateStaticParams to know
+ * which paths to pre-render. We keep the known category slugs here.
+ * Any Shopify collection whose handle matches one of these slugs will work.
+ * New collections just need their slug added to this list.
+ */
 export async function generateStaticParams() {
   return [
     { category: 'sarees' },

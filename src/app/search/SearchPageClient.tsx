@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Search as SearchIcon, ShoppingBag } from 'lucide-react';
-import { searchProducts } from '@/lib/mockData';
+import { searchProducts as shopifySearch } from '@/lib/shopify';
+import { normalizeProduct } from '@/lib/shopifyTypes';
+import type { Product } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BackButton from '@/components/ui/BackButton';
@@ -14,7 +16,20 @@ export default function SearchPageClient() {
   const router = useRouter();
   const initialQuery = params.get('q') || '';
   const [query, setQuery] = useState(initialQuery);
-  const results = searchProducts(initialQuery);
+  const [results, setResults] = useState<Product[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    if (!initialQuery) {
+      setResults([]);
+      return;
+    }
+    setSearching(true);
+    shopifySearch(initialQuery, 24).then((shopifyProducts) => {
+      setResults(shopifyProducts.map(normalizeProduct));
+      setSearching(false);
+    });
+  }, [initialQuery]);
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },
@@ -58,9 +73,21 @@ export default function SearchPageClient() {
       {initialQuery ? (
         <>
           <p className="text-[13px] font-montserrat text-taupe mb-6">
-            {results.length} result{results.length !== 1 ? 's' : ''} for &ldquo;{initialQuery}&rdquo;
+            {searching ? 'Searching…' : `${results.length} result${results.length !== 1 ? 's' : ''} for "${initialQuery}"`}
           </p>
-          {results.length === 0 ? (
+          {searching ? (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-surface rounded-xl overflow-hidden animate-pulse">
+                  <div className="aspect-[3/4] bg-taupe/10" />
+                  <div className="p-3.5 space-y-2">
+                    <div className="h-3 bg-taupe/10 rounded w-1/2" />
+                    <div className="h-4 bg-taupe/10 rounded w-3/4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : results.length === 0 ? (
             <div className="text-center py-16">
               <ShoppingBag size={56} className="mx-auto text-taupe/40 mb-5" />
               <h2 className="font-playfair text-2xl text-ink mb-2">No products found</h2>

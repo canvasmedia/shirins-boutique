@@ -6,7 +6,11 @@ import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import BackButton from '@/components/ui/BackButton';
 
 const contactInfo = [
-  { icon: MapPin, label: 'Address', value: '42 Sadar Bazaar, Jaipur, Rajasthan 302001' },
+  {
+    icon: MapPin,
+    label: 'Address',
+    value: '1, British Indian Street, 6th Floor, Room No. 603, Kolkata – 700069\n(Opposite Merlin Chamber Building)',
+  },
   { icon: Phone, label: 'Phone', value: '+91 9836380078' },
   { icon: Mail, label: 'Email', value: 'hello@shirinsboutique.in' },
   { icon: Clock, label: 'Hours', value: 'Mon–Sat: 10am–7pm IST' },
@@ -56,7 +60,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-montserrat tracking-[0.15em] uppercase text-taupe">{label}</p>
-                    <p className="text-[13px] font-montserrat text-ink font-medium mt-0.5">{value}</p>
+                    <p className="text-[13px] font-montserrat text-ink font-medium mt-0.5 whitespace-pre-line">{value}</p>
                   </div>
                 </div>
               ))}
