@@ -15,7 +15,7 @@ import {
   Users,
 } from 'lucide-react';
 
-const WHATSAPP_NUMBER = '919999999999';
+const WHATSAPP_NUMBER = '919836380078';
 
 const RETAIL_BADGES = [
   { icon: <RefreshCw size={13} />, label: '15-Day Returns' },

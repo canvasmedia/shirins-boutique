@@ -26,7 +26,7 @@
 # The shell's JavaScript reads window.location.pathname and fetches the
 # correct product from Shopify's API in the browser.
 #
-/products/*     /products/_/index.html    200
+/products/*     /products/_.html    200
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SECURITY & SEO HEADERS

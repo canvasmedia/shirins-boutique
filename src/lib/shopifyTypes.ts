@@ -210,6 +210,12 @@ export function normalizeProduct(p: ShopifyProduct): Product {
     wholesalePricePerPiece,
     minOrderQty,
     wholesaleTiers,
+    variants: variants.map((v) => ({
+      id: v.id,
+      size: v.selectedOptions.find((o) => o.name.toLowerCase() === 'size')?.value,
+      quantityAvailable: v.quantityAvailable,
+      availableForSale: v.availableForSale,
+    })),
   };
 }
 

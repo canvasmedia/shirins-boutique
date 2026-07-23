@@ -1,0 +1,199 @@
+# Spiider — Shopify Headless Backend Setup Guide
+### Next.js Frontend (already live) + Shopify Backend (cart, checkout, payments, orders, shipping)
+
+---
+
+## 0. The Architecture, In Plain Terms
+
+Your Next.js site (spiider-e-commerce-platform.pages.dev) stays exactly as it is. You are not rebuilding your frontend. What you're adding is a **backend brain** behind it:
+
+```
+Customer browses spiider-e-commerce-platform.pages.dev (your Next.js UI)
+        ↓
+Next.js calls Shopify's Storefront API (GraphQL) to get real product data, create a cart
+        ↓
+Customer clicks "Checkout" → redirected to Shopify's Hosted Checkout page
+        ↓
+Shopify Hosted Checkout handles: payment gateway, order creation, tax, abandoned cart, emails
+        ↓
+Order appears in your Shopify Admin → you fulfil it → Shiprocket books a courier
+        ↓
+Courier (Delhivery/Ecom Express/BlueDart/etc.) picks up → delivers to customer in Kolkata (or anywhere)
+        ↓
+Customer gets tracking link + email/SMS updates automatically, from Shopify + Shiprocket
+```
+
+**Key point for your biggest concern (payment/checkout safety):** you will *not* build your own payment or checkout page. When the customer clicks "Buy," your Next.js app redirects them to a Shopify-hosted checkout URL. Shopify — not your code — handles the card/UPI entry, OTP, fraud checks, and order creation. This is standard even for large headless brands (Kotn, Allbirds-style setups) and is the recommended approach even inside Shopify's own 2026 documentation. You never touch or store card data.
+
+---
+
+## 1. Set Up the Shopify Store (Backend Only — Your Frontend Doesn't Change)
+
+1. Go to shopify.com → start a free trial (3 days free, then discounted intro pricing for the first few months).
+2. Choose **India** as your business country during setup — this makes pricing show in INR and enables Indian tax settings.
+3. Pick a plan. For your stage (early, low order volume, testing real products):
+   - **Basic plan (~₹1,499–1,994/month + 18% GST)** is the right starting plan. It includes unlimited products, order management, discount codes, and 4 inventory locations.
+   - You will pay a **2% "third-party transaction fee"** on top of your payment gateway's own fee, because **Shopify Payments is not available in India**. This is unavoidable on any plan — you just use a third-party gateway (Section 4) instead.
+   - Upgrade to **Grow (~₹5,599/month)** later once you're doing ₹3–4 lakh/month in sales — the transaction fee drops to 1%, which starts saving you more than the plan price difference.
+4. You do **not** need to pick or set up a Shopify theme. Since your frontend is Next.js, you'll be running Shopify "headless" — the built-in theme is irrelevant to you.
+
+---
+
+## 2. Add Your Real Product Data (Replacing the Stock Images)
+
+This is where "how do I store each product's information" gets answered — **Shopify's Admin is your product database.** You don't need a separate database at all.
+
+### Step-by-step:
+1. In Shopify Admin → **Products → Add product**.
+2. For each product (e.g. a pair of jeans):
+   - **Title, Description** — your copy.
+   - **Media** — upload your real product photography here (this replaces your current stock/splash images). Recommended: 2000×2000px, consistent white or lifestyle background per your brand system.
+   - **Pricing** — set price, compare-at-price (for showing discounts), and cost per item (for your own margin tracking).
+   - **Variants** — this is critical for fashion: add options like **Size** (28/30/32/34/36) and **Color/Wash** for Denim, or **Size** (S/M/L/XL) for T-Shirts/Shirts. Shopify auto-generates a variant for every combination, each with its own SKU, price override (if needed), and inventory count.
+   - **Inventory** — enter stock quantity per variant per location (e.g. your Kolkata warehouse/home office).
+   - **Shipping** — enter weight per item (needed later for accurate Shiprocket courier rate calculation).
+   - **Organization** — assign to a **Collection** matching your verticals: Denim, Indian Ethnic Wear, T-Shirts and Shirts, Kids. Collections are what your Next.js frontend will query to build your category pages.
+3. Repeat for all products. For bulk upload later (50+ products), use **Products → Import** with a CSV template instead of adding one by one.
+
+### Connecting this data to your existing Next.js frontend:
+1. In Shopify Admin → **Settings → Apps and sales channels → Develop apps** (or search "Headless" in the Shopify App Store, install the **Headless** sales channel).
+2. Click **Create storefront** → this generates a **Storefront API access token** (public-safe, used for reading products/creating carts — safe to use in frontend code).
+3. In your Next.js project, add environment variables:
+   ```
+   SHOPIFY_STORE_DOMAIN=spiider.myshopify.com
+   SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_token_here
+   ```
+4. Replace your current placeholder/stock product data fetching logic with GraphQL queries to the Storefront API (product list, product detail, collections). Your existing page layouts, animations, and components stay untouched — only the data source changes from hardcoded/stock data to live Shopify data.
+5. **Never** put your **Admin API** key in frontend code — that one has write-access to your whole store and must only be called from a secure server-side function if you ever need it (e.g. custom order automation later).
+
+---
+
+## 3. Cart & Checkout (Your Main Concern)
+
+1. Your Next.js "Add to Cart" button calls Shopify's **Cart API** (`cartCreate`, `cartLinesAdd` mutations) — this happens invisibly in the background using the Storefront API token.
+2. The cart is tracked using a **cart ID**, which you store in the browser (cookie or local state) so it persists across page loads.
+3. When the customer clicks **"Checkout"**, your app redirects them to the `checkoutUrl` Shopify gives back from the cart object. This URL points to **checkout.spiider.myshopify.com** (or your connected custom domain) — Shopify's own secure, PCI-compliant checkout page.
+4. On that page, Shopify handles:
+   - Address collection
+   - Shipping rate calculation (you configure rates/zones in Section 5)
+   - Payment (via the gateway you connect in Section 4)
+   - Tax calculation
+   - Order creation the moment payment succeeds
+5. After payment, the customer is redirected back to an order confirmation/thank-you page (can be styled to match your brand within Shopify's checkout customization, or a custom Next.js thank-you page depending on your plan).
+
+**This is the part that removes your risk entirely** — you are not building or securing a checkout flow. Shopify is PCI-DSS Level 1 certified and handles this for millions of merchants; you're just plugging into it.
+
+---
+
+## 4. Payment Gateway Setup (India-Specific)
+
+Since **Shopify Payments does not operate in India**, you connect a third-party gateway inside Shopify Admin:
+
+1. Shopify Admin → **Settings → Payments**.
+2. Under "Third-party providers," choose one:
+   - **Razorpay** — most widely used by Indian Shopify merchants; supports UPI, cards, netbanking, wallets, EMI.
+   - **PayU** or **Cashfree** — solid alternatives, similar fee structure.
+3. Create an account with your chosen gateway (KYC required — PAN, GST if registered, bank account for settlement) if you don't already have one.
+4. Paste the gateway's API keys into Shopify's payment settings.
+5. Enable **Cash on Delivery (COD)** if you want it (very common in Indian fashion e-commerce, but adds RTO/return risk — you decide based on your risk appetite).
+
+### Fee stacking to budget for:
+- Shopify's transaction fee: **2%** (Basic plan) — charged because you're not using Shopify Payments.
+- Gateway's own fee: **~1.8–2.36%** (Razorpay/PayU/Cashfree, varies by payment method — UPI is usually cheapest, credit cards highest).
+- **Combined: roughly 4–4.4% per transaction** on the Basic plan. This drops as you move to Grow/Advanced plans (1%/0.5% Shopify fee instead of 2%).
+
+---
+
+## 5. Shipping, Courier & Delivery — Full Flow to a Kolkata Customer's Door
+
+This answers your "who picks up, who delivers" question directly.
+
+### Step 1 — Connect a shipping aggregator
+Install **Shiprocket** from the Shopify App Store (one-click integration, free to start — no monthly fee, no minimum order requirement). Shiprocket is the standard choice for Indian D2C fashion brands doing under 5,000 orders/month.
+
+### Step 2 — What Shiprocket actually does
+- It aggregates **17+ courier partners** — Delhivery, BlueDart, Ecom Express, DTDC, XpressBees, Shadowfax, and more — under one dashboard.
+- When an order comes in on Shopify, it **automatically syncs** into your Shiprocket dashboard.
+- Shiprocket's recommendation engine suggests the **cheapest/fastest courier** for that specific order based on the customer's pincode, order weight, and COD vs. prepaid status.
+- You (or Shiprocket, on your instruction) **generate an AWB (Air Waybill) number** and a shipping label for the order.
+
+### Step 3 — Who actually picks up the package
+- You set a **pickup address** in Shiprocket (this can be your home, office, or a small warehouse — wherever you're storing inventory, e.g. in Kolkata/Howrah).
+- You schedule a **pickup request** inside Shiprocket.
+- The assigned courier (say, Delhivery or Ecom Express) sends an **agent to physically collect the package** from your pickup address on the scheduled day. You pack and label it; you don't personally deliver anything anywhere.
+
+### Step 4 — The delivery journey to the customer
+- The courier moves the package through their own network (regional hub → destination city hub → local delivery station).
+- For a **Kolkata-based customer**, once your product reaches Kolkata's local sorting hub (couriers like Delhivery and Ecom Express have dense Kolkata coverage since it's a metro), a local delivery rider does the last-mile drop to the customer's address — same as how a Myntra or Ajio order arrives.
+- If it's **COD**, the rider collects cash/UPI on delivery; Shiprocket reconciles this and **remits the collected COD amount to your bank account within 2–5 business days** (faster options exist for a small extra fee).
+
+### Step 5 — Tracking (your other big concern)
+- Shiprocket auto-generates a **branded tracking page** (can carry your Spiider logo) showing live status: Order Placed → Picked Up → In Transit → Out for Delivery → Delivered.
+- Shopify **also** sends automatic order confirmation and shipping-update emails to the customer (built-in, no extra setup) once you mark the order as fulfilled/add tracking info.
+- You can layer **SMS/WhatsApp tracking updates** via Shiprocket's notification settings for a more premium, on-brand experience — fits your motion-led, premium positioning well.
+
+### Return/exchange flow (fashion has 25–35% return rates industry-wide — plan for it)
+- Enable **reverse pickup** in Shiprocket — same courier network picks the item back up from the customer.
+- Recommended for a premium brand: quality-check every return before restocking, process refunds within 48 hours of the item reaching you back, and track *why* items are returned (sizing issue, damage, etc.) to improve your size charts over time — directly useful given your Denim vertical where fit issues drive most returns.
+
+---
+
+## 6. Abandoned Cart Recovery
+
+- Shopify's Basic plan includes **automatic abandoned checkout emails** — if a customer adds items to cart, reaches checkout, and leaves without paying, Shopify automatically emails them a reminder with a link back to their cart, after a set delay (usually a few hours).
+- No extra app needed to start. If you want SMS/WhatsApp abandoned cart nudges later (often more effective in India than email), you can add a paid app (~₹500–2,000/month) once you have consistent traffic to justify it.
+
+---
+
+## 7. Order Confirmation & Post-Purchase Emails
+
+All of the following are **handled automatically by Shopify** once an order is placed — no custom backend code needed from you:
+- Order confirmation email (sent instantly on successful payment)
+- Shipping confirmation email with tracking link (sent when you mark the order fulfilled in Shopify, ideally auto-pulled from Shiprocket via the integration)
+- Delivery confirmation
+- Optional: refund/cancellation emails
+
+You can customize the wording/branding of these emails under **Shopify Admin → Settings → Notifications** to match Spiider's tone and gold/charcoal identity.
+
+---
+
+## 8. Testing Before Going Live
+
+1. Put your payment gateway into **test/sandbox mode** (Razorpay and others support this).
+2. Place a full test order yourself: browse on your Next.js site → add to cart → checkout → pay with a test card/UPI → confirm the order appears in Shopify Admin.
+3. Confirm the order also appears correctly in **Shiprocket**, and that you can generate a test AWB.
+4. Check that confirmation emails actually arrive (check spam folder too).
+5. Switch the gateway to **live mode** only after this full loop works cleanly.
+
+---
+
+## 9. Go-Live Checklist
+
+- [ ] Shopify store created, correct plan selected
+- [ ] All real products added with correct variants, images, weights, inventory
+- [ ] Headless channel installed, Storefront API token generated and added to Next.js env variables
+- [ ] Next.js frontend pulling live product/collection data instead of placeholders
+- [ ] Cart + checkout redirect tested end-to-end
+- [ ] Payment gateway (Razorpay/PayU/Cashfree) connected and KYC-approved
+- [ ] Shiprocket connected, pickup address set, at least one courier partner tested
+- [ ] Shipping zones/rates configured (e.g. free shipping above ₹X, flat rate otherwise)
+- [ ] Order/shipping notification emails customized with Spiider branding
+- [ ] Return/reverse-pickup flow enabled in Shiprocket
+- [ ] Full test order completed successfully in sandbox mode
+- [ ] Legal pages (Privacy, Returns, Terms, Shipping, Cookie, Accessibility) live and linked — you already have these drafted
+- [ ] Switch payment gateway to live mode
+- [ ] Announce launch
+
+---
+
+## 10. Monthly Cost Summary (Backend Side Only)
+
+| Item | Cost |
+|---|---|
+| Shopify Basic plan | ₹1,499–1,994/month + 18% GST |
+| Payment gateway fixed fee | ₹0 (transaction-based only) |
+| Shiprocket | ₹0/month to start (pay-per-shipment, no minimum) |
+| Combined payment processing | ~4–4.4% per transaction (Shopify's 2% + gateway's ~2–2.4%) on Basic plan |
+| Shipping cost per order | Varies by weight/distance — Shiprocket shows live rates per courier before you book |
+
+Your Next.js frontend hosting (Cloudflare Pages) stays free as already planned — this cost table is purely the new Shopify-side backend cost.

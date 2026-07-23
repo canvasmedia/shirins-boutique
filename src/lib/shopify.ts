@@ -26,6 +26,10 @@ const STOREFRONT_TOKEN =
 
 const SHOPIFY_CONFIGURED = Boolean(SHOPIFY_DOMAIN && STOREFRONT_TOKEN);
 
+// Shopify-hosted customer account (new customer accounts, email-OTP login).
+// Login/orders/addresses all live on this Shopify page — no login code needed here.
+export const SHOPIFY_ACCOUNT_URL = 'https://shopify.com/101260886388/account';
+
 const STOREFRONT_API_URL = SHOPIFY_CONFIGURED
   ? `https://${SHOPIFY_DOMAIN}/api/2024-07/graphql.json`
   : '';

@@ -11,6 +11,7 @@ import MegaMenu from './MegaMenu';
 import SimpleMegaMenu from './SimpleMegaMenu';
 import MobileNavDrawer from './MobileNavDrawer';
 import { occasions, fabricTypes } from '@/lib/mockData';
+import { SHOPIFY_ACCOUNT_URL } from '@/lib/shopify';
 
 type MegaKey = 'sarees' | 'suits' | 'lehenga' | 'occasion' | 'fabric';
 
@@ -228,10 +229,10 @@ export default function Header() {
                 <Search size={20} />
               </button>
 
-              {/* Account */}
-              <Link href="/account" className="hidden lg:flex relative p-1 text-ink hover:text-gold transition-colors min-w-[44px] min-h-[44px] items-center justify-center" aria-label="Account">
+              {/* Account — Shopify-hosted login */}
+              <a href={SHOPIFY_ACCOUNT_URL} className="hidden lg:flex relative p-1 text-ink hover:text-gold transition-colors min-w-[44px] min-h-[44px] items-center justify-center" aria-label="Account">
                 <User size={22} />
-              </Link>
+              </a>
 
               {/* Wishlist — hidden on mobile so the logo stays centered */}
               <Link href="/wishlist" className="hidden lg:flex relative p-1 text-ink hover:text-gold transition-colors min-w-[44px] min-h-[44px] items-center justify-center" aria-label={`Wishlist${wishlistCount > 0 ? ` (${wishlistCount} items)` : ''}`}>
@@ -243,10 +244,10 @@ export default function Header() {
                 )}
               </Link>
 
-              {/* Account — mobile */}
-              <Link href="/account" className="lg:hidden relative p-1 text-ink hover:text-gold transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Account">
+              {/* Account — mobile, Shopify-hosted login */}
+              <a href={SHOPIFY_ACCOUNT_URL} className="lg:hidden relative p-1 text-ink hover:text-gold transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Account">
                 <User size={20} />
-              </Link>
+              </a>
 
               {/* Cart */}
               <Link href="/cart" className="relative p-1 text-ink hover:text-gold transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label={`Cart${cartCount > 0 ? ` (${cartCount} items)` : ''}`}>

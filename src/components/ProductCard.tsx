@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingBag, Eye, Flame, Timer } from 'lucide-react';
+import { Heart, ShoppingBag, Eye, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '@/lib/types';
-import { formatPrice, getUrgencyMessage } from '@/lib/mockData';
+import { formatPrice } from '@/lib/mockData';
 import { useSite } from '@/lib/context';
 import Badge from './ui/Badge';
 
@@ -41,8 +41,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   const displayPrice = isWholesale ? product.wholesalePricePerPiece : product.retailPrice;
   const comparePrice = !isWholesale ? product.compareAtPrice : undefined;
-  const urgency = getUrgencyMessage(product.id);
-  const isLowStock = urgency.includes('left');
+
+  // Real stock from Shopify (null = inventory not tracked / unknown → show nothing).
+  const knownStock = (product.variants ?? [])
+    .map((v) => v.quantityAvailable)
+    .filter((q): q is number => q !== null);
+  const totalStock = knownStock.length > 0 ? knownStock.reduce((a, b) => a + b, 0) : null;
+  const showLowStock = totalStock !== null && totalStock > 0 && totalStock <= 5;
 
   return (
     <motion.div
@@ -172,13 +177,15 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               {product.fabric}
             </p>
 
-            {/* Urgency micro-copy */}
-            <div className={`flex items-center gap-1 mt-1.5 ${isLowStock ? 'text-rose' : 'text-gold'}`}>
-              {isLowStock ? <Flame size={11} /> : <Timer size={11} />}
-              <span className="text-[10px] font-montserrat font-semibold tracking-wide">
-                {urgency}
-              </span>
-            </div>
+            {/* Stock — real Shopify inventory only (hidden when plentiful or untracked) */}
+            {totalStock !== null && (totalStock === 0 || showLowStock) && (
+              <div className={`flex items-center gap-1 mt-1.5 ${showLowStock ? 'text-rose' : 'text-taupe'}`}>
+                {showLowStock && <Flame size={11} />}
+                <span className="text-[10px] font-montserrat font-semibold tracking-wide">
+                  {totalStock === 0 ? 'Out of stock' : `Only ${totalStock} left`}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </Link>

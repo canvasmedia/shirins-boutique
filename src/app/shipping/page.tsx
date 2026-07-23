@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SHOPIFY_ACCOUNT_URL } from '@/lib/shopify';
 
 export const metadata: Metadata = {
   title: "Shipping & Delivery | Shirin's Boutique",
@@ -141,12 +142,12 @@ export default function ShippingPage() {
                 Account → Orders
               </strong>{' '}
               or our{' '}
-              <Link
-                href="/account"
+              <a
+                href={SHOPIFY_ACCOUNT_URL}
                 className="underline hover:text-gold transition-colors font-medium"
               >
                 Order Tracking
-              </Link>{' '}
+              </a>{' '}
               page.
             </p>
 

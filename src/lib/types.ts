@@ -24,6 +24,7 @@ export interface Product {
   wholesalePricePerPiece: number;
   minOrderQty: number;
   wholesaleTiers: WholesaleTier[];
+  variants?: { id: string; size?: string; quantityAvailable: number | null; availableForSale: boolean }[];
 }
 
 export interface Subcategory {

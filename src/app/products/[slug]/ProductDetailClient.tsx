@@ -97,6 +97,8 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
   const wishlisted = isWishlisted(product.id);
   const displayPrice = isWholesale ? product.wholesalePricePerPiece : product.retailPrice;
   const comparePrice = !isWholesale ? product.compareAtPrice : undefined;
+  const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId);
+  const stock = selectedVariant?.quantityAvailable ?? null;
 
   const handleAddToCart = () => {
     // Use selected variant ID if available, otherwise fall back to product ID
@@ -282,7 +284,11 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
                   {product.sizes.map(size => (
                     <button
                       key={size}
-                      onClick={() => setSelectedSize(size)}
+                      onClick={() => {
+                        setSelectedSize(size);
+                        const match = product.variants?.find((v) => v.size === size);
+                        if (match) setSelectedVariantId(match.id);
+                      }}
                       className={`w-12 h-10 text-[12px] font-montserrat rounded border-2 transition-all ${
                         selectedSize === size
                           ? 'border-gold bg-gold/10 text-ink font-bold'
@@ -324,6 +330,17 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
                   </p>
                 )}
               </div>
+            )}
+
+            {/* Stock status (retail only) */}
+            {!isWholesale && stock !== null && (
+              <p className={`text-[12px] font-montserrat font-semibold mb-4 ${stock <= 5 ? 'text-rose' : 'text-taupe'}`}>
+                {stock === 0
+                  ? 'Out of stock'
+                  : stock <= 5
+                  ? `Only ${stock} left in stock`
+                  : 'In stock'}
+              </p>
             )}
 
             {/* Quantity (retail only) */}

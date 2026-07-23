@@ -13,6 +13,7 @@ export async function generateStaticParams() {
     { category: 'sarees' },
     { category: 'suits' },
     { category: 'lehengas' },
+    { category: 'western-wear' },
     { category: 'kurtis-tunics' },
     { category: 'new-arrivals' },
     { category: 'best-sellers' },
